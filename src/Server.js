@@ -34,9 +34,9 @@ class Server {
 	/** @type {String} */
 	dataPath;
 	/** @type {Config} */
-	bluebirdcfg;
+	config;
 	/** @type {Lang} */
-	bluebirdlang;
+	lang;
 	/** @type {CommandMap} */
 	commandMap;
 	/** @type {string} */
@@ -84,16 +84,13 @@ class Server {
 		let start_time = Date.now();
 		this.getLogger().info("Loading Server...");
 		let contents = {
-			Main: {
-				"motd": "BlueBird Server",
-				"address": {
-					"name": "0.0.0.0",
-					"port": 19132,
-					"version": 4,
-				},
+			Config: {
+				"server": {
+                         "address": "0.0.0.0", "port": 19132, "version": 4, },
 				"maxplayers": 20,
+				"motd": "BlueBird Server", 
 				"debug_level": 0,
-				"xbox-auth": true
+				"xbox-auth": true,
 			},
 			Lang: {
 				"kick_username_required": "Username is required",
@@ -105,7 +102,7 @@ class Server {
 				"kick_kicked": "Kicked by ${by}, reason: ${reason}"
 			},
 			Files: {
-				Main: "BlueBird.json",
+				Config: "Config.json",
 				Lang: "Lang.json"
 			}
 		};
@@ -115,19 +112,19 @@ class Server {
 				fs.writeFileSync(name, JSON.stringify(contents[type], null, 4));
 			}
 		}
-		this.bluebirdcfg = new Config("BlueBird.json", Config.TYPE_JSON);
-		this.bluebirdlang = new Lang("Lang.json");
+		this.config = new Config("Config.json", Config.TYPE_JSON);
+		this.lang = new Lang("Lang.json");
 		this.getLogger().info(`This server is running ${this.serverName}, v${this.serverVersion}`);
 		this.getLogger().info(`${this.serverName} is distributed under GPLv3 License`);
-		let addrname = this.bluebirdcfg.getNested("address.name");
-		let addrport = this.bluebirdcfg.getNested("address.port");
-		let addrversion = this.bluebirdcfg.getNested("address.version"); // dont use config on here (u just wait)
-		this.raknet = new RakNetHandler(this, addrname, addrport, addrversion);
-		if (this.raknet.raknet.isRunning === true) {
+		let addr = this.config.getNested("server.address");
+		let port = this.config.getNested("server.port");
+		let version = this.config.getNested("server.version"); // dont use config on here (u just wait)
+		this.raknet = new RakNetHandler(this, addr, port, version);
+		if (this.raknet.isRunning === true) {
 			this.raknet.handle();
 		}
 
-		this.getLogger().info(`Server listened on ${addrname}:${addrport}, Address-Version: ${addrversion}`);
+		this.getLogger().info(`Server listened on Address: ${addr} Port: ${port}, Server-Version: ${version}`);
 
 		DefaultCommandLoader.init(this);
 
