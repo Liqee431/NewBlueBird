@@ -21,7 +21,8 @@ const BinaryStream = require("bbmc-binarystream");
 const Identifiers = require("./mcpe/protocol/Identifiers");
 const Player = require("../Player");
 const DataPacket = require("./mcpe/protocol/DataPacket");
-
+const Server = require("../Server");
+const Config = require("../utils/Config")
 class RakNetHandler {
 	/** @type {MainLogger} */
 	logger;
@@ -34,22 +35,16 @@ class RakNetHandler {
 
 	static MCPE_LASTEST_RAKNET_PROTOCOL_VERSION = 10;
 
-	/**
-	 * 
-	 * @param {Server} server 
-	 * @param {string} AddrName 
-	 * @param {number} AddrPort 
-	 * @param {number} AddrVersion 
-	 */
-	constructor(server, AddrName, AddrPort, AddrVersion) {
+
+	constructor(server, addr, port, version) {
 		PacketPool.init();
-		this.server = server;
+		this.server = server
 		this.logger = new Logger();
 		this.raknet = new RakNetServer(
-			new InternetAddress(AddrName, AddrPort, AddrVersion),
+			new InternetAddress(addr, port, version),
 			RakNetHandler.MCPE_LASTEST_RAKNET_PROTOCOL_VERSION
 		);
-		this.logger.setDebuggingLevel(this.server.bluebirdcfg.get("debug_level"));
+		this.logger.setDebuggingLevel(this.server.config.get('debug_level'))
 	}
 
 	/**
@@ -77,7 +72,7 @@ class RakNetHandler {
 	handle() {
 		let interval = setInterval(() => {
 			if(this.raknet.isRunning === true){
-				this.raknet.message = `MCPE;${this.server.bluebirdcfg.get('motd')};${Identifiers.CURRENT_PROTOCOL};${Identifiers.MINECRAFT_VERSION};${this.server.getOnlinePlayers().length};${this.server.bluebirdcfg.get('maxplayers')};${this.raknet.serverGUID.toString()};`;
+				this.raknet.message = `MCPE;${this.server.config.get('motd')};${Identifiers.CURRENT_PROTOCOL};${Identifiers.MINECRAFT_VERSION};${this.server.getOnlinePlayers().length};${this.server.config.get('maxplayer')};${this.raknet.serverGUID.toString()};`;
 			}else{
 				clearInterval(interval);
 			}
