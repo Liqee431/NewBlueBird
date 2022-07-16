@@ -2,16 +2,11 @@
 https://discord.gg/KQCYsxAD2b
 
 ## Installation
-Tutorial:
+>Download nodejs 
+>Download Git
+## Running
+>Git clone this repo
+>Use "node start.js"
 
-Step 1. git clone https://github.com/BlueBirdMC/BlueBird.git
-
-Step 2. cd BlueBird
-
-Step 3. npm install
-
-Step 4. node start.js
-
-if u r using vscode
-
-Step 4. f5
+## Notes
+If you have nodejs and git skip the Installation Part
