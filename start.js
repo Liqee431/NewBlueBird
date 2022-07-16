@@ -13,5 +13,10 @@
  * \ @author BlueBirdMC Team /            *
 \******************************************/
 
-const BlueBird = require("./");
-new BlueBird();
+const BlueBird = require("./src/BlueBird.js")
+const MainLogger = require("./src/utils/MainLogger");
+let Log = new MainLogger()
+Log.notice("Setting up the Server");
+new BlueBird()
+
+	
